@@ -31,6 +31,7 @@ CodeClimate::TestReporter.start
 require 'vcr'
 
 VCR.configure do |c|
+  c.ignore_hosts 'codeclimate.com'
   c.cassette_library_dir = 'spec/cassettes'
   c.hook_into :webmock
   c.default_cassette_options = { match_requests_on: [:method, :uri, :body] }
@@ -41,6 +42,8 @@ VCR.configure do |c|
 
   c.configure_rspec_metadata!
 end
+
+WebMock.disable_net_connect!(:allow => "codeclimate.com")
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
