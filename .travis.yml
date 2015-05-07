@@ -1,0 +1,18 @@
+language: ruby
+sudo: false
+rvm:
+- 2.0.0
+- 2.1.5
+- 2.2.0
+addons:
+  code_climate:
+    repo_token:
+      secure: "iihmypO05MOWpS7c9K0uao+Xj6ooQoPQr+tawYrUGb8KgrEc3EUPcgeh0nTAMFVsuxL+/eWLJoruh3KOvtJKUOvRrEuqs8NinO1yfGTdKa8kGIsaxRzEjcKuSGhAh4hna0FjEFrgGQClw2TxU+UrGnSm8Gobh1i+wEGL2yzJWFBSPZ1NuDA1frPisN8aLIF0BiqmpYVG7IfnbMUsLgH2gFubXDoZiFw/ik0n8xQwIAoHye0mSrXWvPgeYFV+qOzXebQPdP5AF6li4HRJk1zbrNgN1lg2zy4pLq/6TazOGhl2dXQVRZy7c+LdeUzNIilBoiZmisBjDcHF8Goz2H4ngYMmkQNah4Ma/43pDQWd85aqQp/KXVcJnRbTsYHMfBk6Ybkpo0XRRAZ3aHUqDSu0XTBSJDFeqzjX69HLxt13kOas4bveejPjhcsrSpR5EdeiARH977QVw1w2HZqMaqxK2Qu9eHtybifRWDGeLZV+8qP+NbkMw1zxIP6L5CNKvaCM3A9N9bcaobBnzFf+Azevw0ukIk2GnhuxfcI2NAZbN6/v4QYrFdRcwa2f4U/kcEh/9zMqczPLDnWl0KWABMJWrg96npTk8Mflhdo8oXANNgBhpc0KsY+qVFTMAfM6w4yoInUu1p9W107JcCrRIxJx3ErCrKqBALEVu808bhNB3Gk="
+deploy:
+  provider: rubygems
+  api_key:
+    secure: gE9BoetPOYM2BbhUGZb35UhMoY1Rjv7KUMyMKJ2f5ceQrIp+Qi+rqrRyvt8Fu9EcnLgE1XjB+PxpMKxOeWKYUzVRgQdjpjYU/c+v8bHh7jfblixwum4BhoGaiQkrK+A42we9hTmu4dNALnm5vTMhsN/bPFaRgFB15bk4UYOTZNM=
+  gem: service-status
+  on:
+    ruby: 2.0.0
+    repo: TheBookPeople/service-status-ruby
