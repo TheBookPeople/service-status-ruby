@@ -37,7 +37,7 @@ module ServiceStatus
 		end
 
 		def status
-			online? ? 'Online' : 'Error'
+			online? ? 'online' : 'offline'
 		end
 
 		def online?
@@ -66,7 +66,7 @@ module ServiceStatus
 				checks: checks,
 				timestamp: timestamp,
 				uptime: uptime,
-				diskUsage: disk_usage,
+				diskusage: disk_usage,
 				status: status
 			}.to_json(*a)
 		end

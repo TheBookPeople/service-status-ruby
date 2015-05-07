@@ -22,7 +22,8 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-status = ServiceStatus::Status.new("windows", '3.11', @@boot_time) # @@boot_time is time the app was started
+status = ServiceStatus::Status.new("windows", '3.11', boot_time)
+# boot_time is time the app was started
 
 # check that we can connect to redis
 redis_ok = true
@@ -35,6 +36,29 @@ end
 status.add_check('redis', redis_ok)      
 
 JSON.pretty_generate(status)             # render as JSON as required
+```
+## Format
+
+As below. Checks are always part of the 'checks' array. If they have failed,
+they are included in 'errors' as well.
+
+'Status' is either "online" or "offline".
+
+```javascript
+{
+	"name": "windows",
+	"version": "3.11",
+	"hostname": "clippy",
+	"errors": [],
+	"checks": [
+		"redis"
+	],
+	"timestamp": "2015-05-07 14:35:17",
+	"uptime": "14d:23:11:21",
+	"diskUsage": "64%",
+	"status": "Online"
+}
+
 ```
 
 ## Contributing

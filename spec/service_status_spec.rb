@@ -75,7 +75,7 @@ describe ServiceStatus::Status do
 
   end
 
-  it 'diskUsage' do
+  it 'diskusage' do
     stats = double("stats")
     expect(stats).to receive(:blocks) { '239189165' }
     expect(stats).to receive(:blocks_available) { '106180000' }
@@ -84,7 +84,7 @@ describe ServiceStatus::Status do
   end
 
   it 'status' do
-    expect(@instance.status).to eql 'Online'
+    expect(@instance.status).to eql 'online'
   end
 
   it 'to_json' do
@@ -95,7 +95,7 @@ describe ServiceStatus::Status do
     expect(stats).to receive(:blocks_available) { '106180000' }
     expect(Sys::Filesystem).to receive(:stat).with("/") { stats }
     disk_usage = '55%'
-    expect(@instance.to_json).to eql "{\"name\":\"#{@app_name}\",\"version\":\"#{@version}\",\"hostname\":\"#{@hostname}\",\"errors\":[],\"checks\":[],\"timestamp\":\"2015-04-29 14:52:47\",\"uptime\":\"0d:00:00:00\",\"diskUsage\":\"#{disk_usage}\",\"status\":\"Online\"}"
+    expect(@instance.to_json).to eql "{\"name\":\"#{@app_name}\",\"version\":\"#{@version}\",\"hostname\":\"#{@hostname}\",\"errors\":[],\"checks\":[],\"timestamp\":\"2015-04-29 14:52:47\",\"uptime\":\"0d:00:00:00\",\"diskusage\":\"#{disk_usage}\",\"status\":\"online\"}"
     Timecop.return
   end
 
@@ -104,14 +104,14 @@ describe ServiceStatus::Status do
       @instance.add_check("ElasticSearch", true)
       expect(@instance.checks).to eql ['ElasticSearch']
       expect(@instance.errors).to eql []
-      expect(@instance.status).to eql 'Online'
+      expect(@instance.status).to eql 'online'
     end
 
     it 'had a check that failed' do
       @instance.add_check("ElasticSearch", false)
       expect(@instance.checks).to eql ['ElasticSearch']
       expect(@instance.errors).to eql ['ElasticSearch']
-      expect(@instance.status).to eql 'Error'
+      expect(@instance.status).to eql 'offline'
     end
   end
 
@@ -127,7 +127,7 @@ describe ServiceStatus::Status do
       @instance.add_http_get_check('Responsys API', 'https://foobar.responsys.net/webservices/wsdl/ResponsysWS_Level1.wsdl')
       expect(@instance.checks).to eql ['Responsys API']
       expect(@instance.errors).to eql ['Responsys API']
-      expect(@instance.status).to eql 'Error'
+      expect(@instance.status).to eql 'offline'
     end
 
   end
