@@ -1,5 +1,7 @@
 # Service::Status
 
+[![Build Status](https://travis-ci.org/TheBookPeople/service-status-ruby.svg)](https://travis-ci.org/TheBookPeople/service-status-ruby)
+
 Provides an object representing the status of a service, suitable for exposing
 as JSON as part of a REST api.
 
