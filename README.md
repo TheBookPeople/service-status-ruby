@@ -21,21 +21,21 @@ Or install it yourself as:
 
 ## Usage
 
-	```ruby
-	status = ServiceStatus::Status.new("windows", '3.11', @@boot_time) # @@boot_time is time the app was started
+```ruby
+status = ServiceStatus::Status.new("windows", '3.11', @@boot_time) # @@boot_time is time the app was started
 
-	# check that we can connect to redis
-	redis_ok = true
-	begin
-		Redis.new.ping
-	rescue
-		redis_ok = false
-	end
+# check that we can connect to redis
+redis_ok = true
+begin
+	Redis.new.ping
+rescue
+	redis_ok = false
+end
 
-	status.add_check('redis', redis_ok)      
+status.add_check('redis', redis_ok)      
 
-	JSON.pretty_generate(status)             # render as JSON as required
-	```
+JSON.pretty_generate(status)             # render as JSON as required
+```
 
 ## Contributing
 
