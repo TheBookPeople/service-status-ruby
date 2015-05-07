@@ -1,9 +1,9 @@
-require 'pp'
 require 'service_status/status'
 require 'socket'
+require 'timecop'
+require 'json'
 
 describe ServiceStatus::Status do
-
   before :each do
     @version = '0.0.1'
     @hostname = Socket.gethostname
@@ -34,13 +34,12 @@ describe ServiceStatus::Status do
   it 'timestamp' do
     Timecop.freeze
     @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
-    timestamp =  Time.now.strftime '%Y-%m-%d %T' 
+    timestamp =  Time.now.strftime '%Y-%m-%d %T'
     expect(@instance.timestamp).to eql timestamp
     Timecop.return
   end
 
-  describe "uptime" do
-
+  describe 'uptime' do
     it 'seconds' do
       Timecop.freeze
       @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
@@ -68,18 +67,17 @@ describe ServiceStatus::Status do
     it 'days' do
       Timecop.freeze
       @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
-      Timecop.travel(Time.now + 100000)
+      Timecop.travel(Time.now + 100_000)
       expect(@instance.uptime).to eql '1d:27:46:40'
       Timecop.return
     end
-
   end
 
   it 'diskusage' do
-    stats = double("stats")
+    stats = double('stats')
     expect(stats).to receive(:blocks) { '239189165' }
     expect(stats).to receive(:blocks_available) { '106180000' }
-    expect(Sys::Filesystem).to receive(:stat).with("/") { stats }
+    expect(Sys::Filesystem).to receive(:stat).with('/') { stats }
     expect(@instance.disk_usage).to eql '55%'
   end
 
@@ -88,12 +86,12 @@ describe ServiceStatus::Status do
   end
 
   it 'to_json' do
-    Timecop.freeze(Time.local(2015,04,29,14,52,47))
+    Timecop.freeze(Time.local(2015, 04, 29, 14, 52, 47))
     @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
-    stats = double("stats")
+    stats = double('stats')
     expect(stats).to receive(:blocks) { '239189165' }
     expect(stats).to receive(:blocks_available) { '106180000' }
-    expect(Sys::Filesystem).to receive(:stat).with("/") { stats }
+    expect(Sys::Filesystem).to receive(:stat).with('/') { stats }
     disk_usage = '55%'
     expect(@instance.to_json).to eql "{\"name\":\"#{@app_name}\",\"version\":\"#{@version}\",\"hostname\":\"#{@hostname}\",\"errors\":[],\"checks\":[],\"timestamp\":\"2015-04-29 14:52:47\",\"uptime\":\"0d:00:00:00\",\"diskusage\":\"#{disk_usage}\",\"status\":\"online\"}"
     Timecop.return
@@ -101,14 +99,14 @@ describe ServiceStatus::Status do
 
   describe 'add_check' do
     it 'had a check that was ok' do
-      @instance.add_check("ElasticSearch", true)
+      @instance.add_check('ElasticSearch', true)
       expect(@instance.checks).to eql ['ElasticSearch']
       expect(@instance.errors).to eql []
       expect(@instance.status).to eql 'online'
     end
 
     it 'had a check that failed' do
-      @instance.add_check("ElasticSearch", false)
+      @instance.add_check('ElasticSearch', false)
       expect(@instance.checks).to eql ['ElasticSearch']
       expect(@instance.errors).to eql ['ElasticSearch']
       expect(@instance.status).to eql 'offline'
@@ -116,7 +114,6 @@ describe ServiceStatus::Status do
   end
 
   describe 'add_http_get_check', :vcr do
-
     it 'ok' do
       @instance.add_http_get_check('Responsys API', 'https://ws2.responsys.net/webservices/wsdl/ResponsysWS_Level1.wsdl')
       expect(@instance.checks).to eql ['Responsys API']
@@ -129,6 +126,5 @@ describe ServiceStatus::Status do
       expect(@instance.errors).to eql ['Responsys API']
       expect(@instance.status).to eql 'offline'
     end
-
   end
 end
