@@ -55,8 +55,8 @@ they are included in 'errors' as well.
 	],
 	"timestamp": "2015-05-07 14:35:17",
 	"uptime": "14d:23:11:21",
-	"diskUsage": "64%",
-	"status": "Online"
+	"diskusage": "64%",
+	"status": "online"
 }
 
 ```
