@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    service-status (0.0.2)
+    service-status (0.0.4)
       sys-filesystem (~> 1.1)
 
 GEM
