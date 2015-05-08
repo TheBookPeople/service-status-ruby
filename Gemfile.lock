@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    service-status (0.0.1)
+    service-status (0.0.2)
       sys-filesystem (~> 1.1)
 
 GEM
@@ -121,6 +121,3 @@ DEPENDENCIES
   timecop (~> 0.7)
   vcr (~> 2.9)
   webmock (~> 1.21)
-
-BUNDLED WITH
-   1.10.0.pre.2
