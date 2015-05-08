@@ -1,6 +1,6 @@
 # Service::Status
 
-[![Build Status](https://travis-ci.org/TheBookPeople/service-status-ruby.svg)](https://travis-ci.org/TheBookPeople/service-status-ruby) [![Code Climate](https://codeclimate.com/github/TheBookPeople/service-status-ruby/badges/gpa.svg)](https://codeclimate.com/github/TheBookPeople/service-status-ruby) [![Test Coverage](https://codeclimate.com/github/TheBookPeople/service-status-ruby/badges/coverage.svg)](https://codeclimate.com/github/TheBookPeople/service-status-ruby) [![Gem Version](https://badge.fury.io/rb/service-status-ruby.svg)](http://badge.fury.io/rb/service-status-ruby) ![Gem Dependency](https://img.shields.io/gemnasium/TheBookPeople/service-status-ruby.svg)
+[![Build Status](https://travis-ci.org/TheBookPeople/service-status-ruby.svg)](https://travis-ci.org/TheBookPeople/service-status-ruby) [![Code Climate](https://codeclimate.com/github/TheBookPeople/service-status-ruby/badges/gpa.svg)](https://codeclimate.com/github/TheBookPeople/service-status-ruby) [![Test Coverage](https://codeclimate.com/github/TheBookPeople/service-status-ruby/badges/coverage.svg)](https://codeclimate.com/github/TheBookPeople/service-status-ruby) [![Gem Version](https://badge.fury.io/rb/service-status.svg)](http://badge.fury.io/rb/service-status) [![Gem Dependency](https://img.shields.io/gemnasium/TheBookPeople/service-status-ruby.svg)](https://gemnasium.com/TheBookPeople/service-status-ruby)
 
 
 Provides an object representing the status of a service, suitable for exposing
