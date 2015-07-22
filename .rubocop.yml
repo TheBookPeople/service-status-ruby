@@ -2,7 +2,7 @@ AllCops:
   RunRailsCops: false
   Exclude:
     - 'spec/**/*'
-    - '*.gemspec'
+    - 'service-status.gemspec'
 
 Documentation:
   Enabled: false

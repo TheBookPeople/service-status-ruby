@@ -5,13 +5,11 @@ require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'service_status/version'
 
-RuboCop::RakeTask.new
-
 desc 'Run Code quality checks and tests '
-task default: [:clean, 'rubocop:auto_correct', :test]
+task default: [:clean, :rubocop, :test]
 
 desc 'Run Code quality checks, tests and then create Gem File'
-task build: [:clean, 'rubocop:auto_correct', :test, :gem]
+task build: [:clean, :rubocop, :test, :gem]
 
 CLEAN.include("service-status-#{ServiceStatus::VERSION}.gem")
 CLEAN.include('coverage')
@@ -26,10 +24,7 @@ task :test do
 end
 
 task :rubocop do
-  RuboCop::RakeTask.new(:rubocop) do |task|
-    task.patterns = ['lib/**/*.rb']
-    task.fail_on_error = true
-  end
+  RuboCop::RakeTask.new
 end
 
 task :gem do
