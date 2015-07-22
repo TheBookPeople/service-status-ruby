@@ -36,7 +36,9 @@ rescue
 	redis_ok = false
 end
 
-status.add_check('redis', redis_ok)      
+status.add_check('redis', redis_ok)
+
+status.add_stat('request_count', 100, 'Number of Requests')
 
 JSON.pretty_generate(status)             # render as JSON as required
 ```
@@ -53,6 +55,11 @@ they are included in 'errors' as well.
 	"version": "3.11",
 	"hostname": "clippy",
 	"errors": [],
+  "stats": [{
+     "name": "request_count",
+     "value": 100,
+     "description": "Number of Requests"
+  }],
 	"checks": [
 		"redis"
 	],
