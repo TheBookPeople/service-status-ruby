@@ -4,7 +4,14 @@ require 'timecop'
 require 'json'
 
 describe ServiceStatus::Status do
+
   before :each do
+    stats = double('stats')
+    allow(stats).to receive(:blocks) { '239189165' }
+    allow(stats).to receive(:blocks_available) { '106180000' }
+    allow(Sys::Filesystem).to receive(:stat).with('/') { stats }
+    @disk_usage = '55%'
+
     @version = '0.0.1'
     @hostname = Socket.gethostname
     @app_name = 'killer-app'
@@ -21,10 +28,6 @@ describe ServiceStatus::Status do
 
   it 'hostname' do
     expect(@instance.hostname).to eql @hostname
-  end
-
-  it 'errors' do
-    expect(@instance.errors).to eql []
   end
 
   it 'checks' do
@@ -74,10 +77,6 @@ describe ServiceStatus::Status do
   end
 
   it 'diskusage' do
-    stats = double('stats')
-    expect(stats).to receive(:blocks) { '239189165' }
-    expect(stats).to receive(:blocks_available) { '106180000' }
-    expect(Sys::Filesystem).to receive(:stat).with('/') { stats }
     expect(@instance.disk_usage).to eql '55%'
   end
 
@@ -88,43 +87,82 @@ describe ServiceStatus::Status do
   it 'to_json' do
     Timecop.freeze(Time.local(2015, 04, 29, 14, 52, 47))
     @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
-    stats = double('stats')
-    expect(stats).to receive(:blocks) { '239189165' }
-    expect(stats).to receive(:blocks_available) { '106180000' }
-    expect(Sys::Filesystem).to receive(:stat).with('/') { stats }
-    disk_usage = '55%'
-    expect(@instance.to_json).to eql "{\"name\":\"#{@app_name}\",\"version\":\"#{@version}\",\"hostname\":\"#{@hostname}\",\"errors\":[],\"checks\":[],\"timestamp\":\"2015-04-29 14:52:47\",\"uptime\":\"0d:00:00:00\",\"diskusage\":\"#{disk_usage}\",\"status\":\"online\"}"
+    expect(@instance.to_json).to eql %({"name":"#{@app_name}","version":"#{@version}","hostname":"#{@hostname}","stats":[],"checks":[],"timestamp":"2015-04-29 14:52:47","uptime":"0d:00:00:00","diskusage":"#{@disk_usage}","status":"online"})
     Timecop.return
   end
 
   describe 'add_check' do
     it 'had a check that was ok' do
-      @instance.add_check('ElasticSearch', true)
-      expect(@instance.checks).to eql ['ElasticSearch']
-      expect(@instance.errors).to eql []
+      @instance.add_check('elasticsearch', true)
+      expect(@instance.checks).to eql [{ name: 'elasticsearch', successful: true }]
       expect(@instance.status).to eql 'online'
     end
 
     it 'had a check that failed' do
-      @instance.add_check('ElasticSearch', false)
-      expect(@instance.checks).to eql ['ElasticSearch']
-      expect(@instance.errors).to eql ['ElasticSearch']
+      @instance.add_check('elasticsearch', false)
+      expect(@instance.checks).to eql [{ name: 'elasticsearch', successful: false }]
       expect(@instance.status).to eql 'offline'
+    end
+
+    it 'supports check with description' do
+      @instance.add_check('elasticsearch', true, 'Can connect to Elasticsearch')
+      expect(@instance.checks).to eql [{ name: 'elasticsearch', successful: true, description: 'Can connect to Elasticsearch'  }]
+      expect(@instance.status).to eql 'online'
+    end
+
+
+    it 'shown in json' do
+      Timecop.freeze(Time.local(2015, 04, 29, 14, 52, 47))
+      @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
+      @instance.add_check('elasticsearch', true)
+      expect(@instance.to_json).to eql %({"name":"#{@app_name}","version":"#{@version}","hostname":"#{@hostname}","stats":[],"checks":[{"name":"elasticsearch","successful":true}],"timestamp":"2015-04-29 14:52:47","uptime":"0d:00:00:00","diskusage":"#{@disk_usage}","status":"online"})
+      Timecop.return
     end
   end
 
   describe 'add_http_get_check', :vcr do
     it 'ok' do
       @instance.add_http_get_check('Responsys API', 'https://ws2.responsys.net/webservices/wsdl/ResponsysWS_Level1.wsdl')
-      expect(@instance.checks).to eql ['Responsys API']
-      expect(@instance.errors).to eql []
+      expect(@instance.checks).to eql [{:name=>"Responsys API", :successful=>true}]
     end
 
     it 'fail' do
       @instance.add_http_get_check('Responsys API', 'https://foobar.responsys.net/webservices/wsdl/ResponsysWS_Level1.wsdl')
-      expect(@instance.checks).to eql ['Responsys API']
-      expect(@instance.errors).to eql ['Responsys API']
+      expect(@instance.checks).to eql [{:name=>"Responsys API", :successful=>false}]
       expect(@instance.status).to eql 'offline'
     end
+  end
+
+  describe 'add stat' do
+
+    it 'add one' do
+      @instance.add_stat('request_counts', 100, 'Number of Requests')
+      expect(@instance.stats).to eql [{ description: 'Number of Requests', name: 'request_counts', value: 100 }]
+    end
+
+    it 'add multiple' do
+      @instance.add_stat('request_counts', 100, 'Number of Requests')
+      @instance.add_stat('error_counts', 42, 'Number of errors')
+      expect(@instance.stats).to eql [
+                                      { description: 'Number of Requests', name: 'request_counts', value: 100 },
+                                      {:name=>"error_counts", :value=>42, :description=>"Number of errors"}
+                                     ]
+    end
+
+    it 'add without description' do
+      @instance.add_stat('request_counts', 100)
+      expect(@instance.stats).to eql [{ name: 'request_counts', value: 100 }]
+    end
+
+
+
+    it 'shown in json' do
+      Timecop.freeze(Time.local(2015, 04, 29, 14, 52, 47))
+      @instance = ServiceStatus::Status.new(@app_name, @version, Time.now)
+      @instance.add_stat('request_counts', 100, 'Number of Requests')
+      expect(@instance.to_json).to eql %({"name":"#{@app_name}","version":"#{@version}","hostname":"#{@hostname}","stats":[{"name":"request_counts","value":100,"description":"Number of Requests"}],"checks":[],"timestamp":"2015-04-29 14:52:47","uptime":"0d:00:00:00","diskusage":"#{@disk_usage}","status":"online"})
+      Timecop.return
+    end
+
   end
 end

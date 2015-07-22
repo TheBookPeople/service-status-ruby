@@ -24,10 +24,7 @@ task :test do
 end
 
 task :rubocop do
-  RuboCop::RakeTask.new(:rubocop) do |task|
-    task.patterns = ['lib/**/*.rb']
-    task.fail_on_error = true
-  end
+  RuboCop::RakeTask.new
 end
 
 task :gem do

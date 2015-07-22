@@ -8,7 +8,7 @@ require 'sys/filesystem'
 
 module ServiceStatus
   class Status
-    attr_reader :name, :version, :hostname, :errors, :checks, :timestamp
+    attr_reader :name, :version, :hostname, :checks, :timestamp, :stats
 
     def initialize(name, version, boot_time)
       @boot_time = boot_time
@@ -17,23 +17,33 @@ module ServiceStatus
       @hostname = Socket.gethostname
       @checks = []
       @timestamp = Time.now.strftime('%Y-%m-%d %T')
+      @stats = []
       @errors = []
     end
 
-    def add_check(name, ok)
-      @checks << name
-      @errors << name unless ok
+    def add_check(name, successful, description = nil)
+      check = { name: name, successful: successful }
+      check[:description] = description if description
+      @checks << check
+      @errors << name unless successful
     end
 
     def add_http_get_check(name, url)
-      @checks << name
+      successful = true
       uri = URI(url)
       begin
         res = Net::HTTP.get_response(uri)
-        @errors << name unless res.is_a?(Net::HTTPSuccess)
+        successful = res.is_a?(Net::HTTPSuccess)
       rescue
-        @errors << name
+        successful = false
       end
+      add_check(name, successful)
+    end
+
+    def add_stat(name, value, description = nil)
+      stat = { name: name, value: value }
+      stat[:description] = description if description
+      @stats << stat
     end
 
     def status
@@ -63,7 +73,7 @@ module ServiceStatus
         name: name,
         version: version,
         hostname: hostname,
-        errors: errors,
+        stats: stats,
         checks: checks,
         timestamp: timestamp,
         uptime: uptime,
@@ -87,7 +97,7 @@ module ServiceStatus
     end
 
     def filesystem
-      @stats ||= Sys::Filesystem.stat('/')
+      @root_filesystem ||= Sys::Filesystem.stat('/')
     end
   end
 end
