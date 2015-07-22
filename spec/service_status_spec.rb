@@ -142,6 +142,11 @@ describe ServiceStatus::Status do
                                      ]
     end
 
+    it 'add without description' do
+      @instance.add_stat('request_counts', 100)
+      expect(@instance.stats).to eql [{ name: 'request_counts', value: 100 }]
+    end
+
 
 
     it 'shown in json' do

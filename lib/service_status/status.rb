@@ -37,8 +37,12 @@ module ServiceStatus
       end
     end
 
-    def add_stat(name, value, description)
-      @stats << { name: name, value: value, description: description }
+    def add_stat(name, value, description=nil)
+      if description
+        @stats << { name: name, value: value, description: description }
+      else
+        @stats << { name: name, value: value }
+      end
     end
 
     def status
