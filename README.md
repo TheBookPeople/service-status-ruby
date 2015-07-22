@@ -60,9 +60,11 @@ they are included in 'errors' as well.
     "value": 100,
     "description": "Number of Requests"
   }],
-  "checks": [
-    "redis"
-  ],
+  "checks": [{
+    "name": "redis",
+    "successful": true
+    "description": "Redis"
+  }],
   "timestamp": "2015-05-07 14:35:17",
   "uptime": "14d:23:11:21",
   "diskusage": "64%",

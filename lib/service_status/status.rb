@@ -8,7 +8,7 @@ require 'sys/filesystem'
 
 module ServiceStatus
   class Status
-    attr_reader :name, :version, :hostname, :errors, :checks, :timestamp, :stats
+    attr_reader :name, :version, :hostname, :checks, :timestamp, :stats
 
     def initialize(name, version, boot_time)
       @boot_time = boot_time
@@ -17,24 +17,29 @@ module ServiceStatus
       @hostname = Socket.gethostname
       @checks = []
       @timestamp = Time.now.strftime('%Y-%m-%d %T')
-      @errors = []
       @stats = []
+      @errors = []
     end
 
-    def add_check(name, ok)
-      @checks << name
-      @errors << name unless ok
+    def add_check(name, successful, description = nil)
+      if description
+        @checks << { name: name, successful: successful, description: description }
+      else
+        @checks << { name: name, successful: successful }
+      end
+      @errors << name unless successful
     end
 
     def add_http_get_check(name, url)
-      @checks << name
+      successful = true
       uri = URI(url)
       begin
         res = Net::HTTP.get_response(uri)
-        @errors << name unless res.is_a?(Net::HTTPSuccess)
+        successful = res.is_a?(Net::HTTPSuccess)
       rescue
-        @errors << name
+        successful = false
       end
+      add_check(name, successful)
     end
 
     def add_stat(name, value, description = nil)
@@ -72,7 +77,6 @@ module ServiceStatus
         name: name,
         version: version,
         hostname: hostname,
-        errors: errors,
         stats: stats,
         checks: checks,
         timestamp: timestamp,
