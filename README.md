@@ -51,22 +51,22 @@ they are included in 'errors' as well.
 
 ```javascript
 {
-	"name": "windows",
-	"version": "3.11",
-	"hostname": "clippy",
-	"errors": [],
+  "name": "windows",
+  "version": "3.11",
+  "hostname": "clippy",
+  "errors": [],
   "stats": [{
-     "name": "request_count",
-     "value": 100,
-     "description": "Number of Requests"
+    "name": "request_count",
+    "value": 100,
+    "description": "Number of Requests"
   }],
-	"checks": [
-		"redis"
-	],
-	"timestamp": "2015-05-07 14:35:17",
-	"uptime": "14d:23:11:21",
-	"diskusage": "64%",
-	"status": "online"
+  "checks": [
+    "redis"
+  ],
+  "timestamp": "2015-05-07 14:35:17",
+  "uptime": "14d:23:11:21",
+  "diskusage": "64%",
+  "status": "online"
 }
 
 ```
