@@ -22,11 +22,9 @@ module ServiceStatus
     end
 
     def add_check(name, successful, description = nil)
-      if description
-        @checks << { name: name, successful: successful, description: description }
-      else
-        @checks << { name: name, successful: successful }
-      end
+      check = { name: name, successful: successful }
+      check[:description] = description if description
+      @checks << check
       @errors << name unless successful
     end
 
@@ -43,11 +41,9 @@ module ServiceStatus
     end
 
     def add_stat(name, value, description = nil)
-      if description
-        @stats << { name: name, value: value, description: description }
-      else
-        @stats << { name: name, value: value }
-      end
+      stat = { name: name, value: value }
+      stat[:description] = description if description
+      @stats << stat
     end
 
     def status
