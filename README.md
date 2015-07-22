@@ -36,8 +36,10 @@ rescue
 	redis_ok = false
 end
 
-status.add_check('redis', redis_ok)
+#Last argument 'description' is optional
+status.add_check('redis', redis_ok, 'Can connect to Redis')
 
+#Last argument 'description' is optional
 status.add_stat('request_count', 100, 'Number of Requests')
 
 JSON.pretty_generate(status)             # render as JSON as required
@@ -54,7 +56,6 @@ they are included in 'errors' as well.
   "name": "windows",
   "version": "3.11",
   "hostname": "clippy",
-  "errors": [],
   "stats": [{
     "name": "request_count",
     "value": 100,
@@ -63,7 +64,7 @@ they are included in 'errors' as well.
   "checks": [{
     "name": "redis",
     "successful": true
-    "description": "Redis"
+    "description": "Can connect to Redis"
   }],
   "timestamp": "2015-05-07 14:35:17",
   "uptime": "14d:23:11:21",
