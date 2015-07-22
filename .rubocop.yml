@@ -3,6 +3,7 @@ AllCops:
   Exclude:
     - 'spec/**/*'
     - 'service-status.gemspec'
+    - 'vendor/**/*'
 
 Documentation:
   Enabled: false
