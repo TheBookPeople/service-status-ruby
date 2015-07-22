@@ -1,3 +1,9 @@
+AllCops:
+  RunRailsCops: false
+  Exclude:
+    - 'spec/**/*'
+    - '*.gemspec'
+
 Documentation:
   Enabled: false
 

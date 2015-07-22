@@ -8,7 +8,7 @@ require 'sys/filesystem'
 
 module ServiceStatus
   class Status
-    attr_reader :name, :version, :hostname, :errors, :checks, :timestamp
+    attr_reader :name, :version, :hostname, :errors, :checks, :timestamp, :stats
 
     def initialize(name, version, boot_time)
       @boot_time = boot_time
@@ -18,6 +18,7 @@ module ServiceStatus
       @checks = []
       @timestamp = Time.now.strftime('%Y-%m-%d %T')
       @errors = []
+      @stats = []
     end
 
     def add_check(name, ok)
@@ -34,6 +35,10 @@ module ServiceStatus
       rescue
         @errors << name
       end
+    end
+
+    def add_stat(name, value, description)
+      @stats << { name: name, value: value, description: description }
     end
 
     def status
@@ -64,6 +69,7 @@ module ServiceStatus
         version: version,
         hostname: hostname,
         errors: errors,
+        stats: stats,
         checks: checks,
         timestamp: timestamp,
         uptime: uptime,
@@ -87,7 +93,7 @@ module ServiceStatus
     end
 
     def filesystem
-      @stats ||= Sys::Filesystem.stat('/')
+      @root_filesystem ||= Sys::Filesystem.stat('/')
     end
   end
 end

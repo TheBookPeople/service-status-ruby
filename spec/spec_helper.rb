@@ -22,10 +22,10 @@ require 'simplecov'
 SimpleCov.start
 
 SimpleCov.configure do
-      minimum_coverage '100%'
+  minimum_coverage '100%'
 end
 
-require "codeclimate-test-reporter"
+require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
 require 'vcr'
@@ -43,7 +43,7 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
 end
 
-WebMock.disable_net_connect!(:allow => "codeclimate.com")
+WebMock.disable_net_connect!(allow: 'codeclimate.com')
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
